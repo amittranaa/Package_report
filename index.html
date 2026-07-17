@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Requirement Analysis & Technology Recommendation - Testa Diagnostics</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: {
+                            900: '#0B0F19',
+                            800: '#111827',
+                            700: '#1F2937',
+                        },
+                        brand: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            400: '#2dd4bf', 
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                        },
+                        accent: {
+                            orange: '#f97316',
+                            red: '#ef4444'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0B0F19; }
+        ::-webkit-scrollbar-thumb { background: #1F2937; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #14b8a6; }
+
+        body {
+            background-color: #0B0F19;
+            color: #e5e7eb;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism utilities */
+        .glass-card {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #2dd4bf, #0ea5e9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .text-gradient-logo {
+            background: linear-gradient(to right, #f97316, #ef4444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Animations */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .reveal-left { opacity: 0; transform: translateX(-30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal-left.active { opacity: 1; transform: translateX(0); }
+        .reveal-right { opacity: 0; transform: translateX(30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal-right.active { opacity: 1; transform: translateX(0); }
+        .reveal-up { opacity: 0; transform: scale(0.95); transition: all 0.6s ease-out; }
+        .reveal-up.active { opacity: 1; transform: scale(1); }
+
+        .timeline-dot {
+            width: 16px; height: 16px; background: #14b8a6; border-radius: 50%;
+            position: absolute; left: -9px; top: 24px;
+            box-shadow: 0 0 10px rgba(20, 184, 166, 0.5);
+        }
+
+        .tech-card:hover { transform: translateY(-5px); transition: transform 0.3s ease; }
+        
+        .glow-border {
+            position: relative;
+        }
+        .glow-border::before {
+            content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, #14b8a6, #3b82f6); z-index: -1;
+            border-radius: inherit; opacity: 0.5; filter: blur(8px);
+        }
+    </style>
+</head>
+<body class="antialiased font-sans selection:bg-brand-500 selection:text-white">
+
+    <!-- Background Accents -->
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-brand-600/10 blur-[120px]"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-600/10 blur-[120px]"></div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="fixed top-0 w-full z-50 glass-card border-b-0 border-white/5 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="logo_2.jpg" alt="AmitRana Digital Marketing Agency Logo" class="h-12 w-auto rounded-md shadow-lg border border-white/10" onerror="this.src='https://placehold.co/150x50/111827/ffffff?text=AmitRana+Agency'">
+                <div class="hidden md:block">
+                    <p class="text-xs text-gray-400 font-medium tracking-wider uppercase">Prepared By</p>
+                    <p class="text-sm font-bold text-white tracking-wide">AmitRana Digital</p>
+                </div>
+            </div>
+            <div class="text-right hidden sm:block">
+                <p class="text-xs text-gray-400 font-medium tracking-wider uppercase">Prepared For</p>
+                <p class="text-sm font-bold text-brand-400 tracking-wide">Testa Diagnostics</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="pt-28 pb-20">
+        
+        <!-- Hero Section -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+            <div class="text-center max-w-4xl mx-auto reveal">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-sm font-medium mb-6 shadow-[0_0_15px_rgba(20,184,166,0.15)]">
+                    <i class="fa-solid fa-file-shield"></i> Official Consultation Report
+                </div>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-heading font-extrabold text-white leading-tight mb-6">
+                    Website Requirement Analysis & <br class="hidden md:block"/>
+                    <span class="text-gradient">Technology Recommendation</span>
+                </h1>
+                <p class="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">
+                    A comprehensive strategy designed to elevate your diagnostic center into a premium digital healthcare brand.
+                </p>
+            </div>
+        </section>
+
+        <!-- 1. Executive Summary -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+            <div class="glass-card rounded-2xl p-8 md:p-10 reveal border-l-4 border-l-brand-500 relative overflow-hidden">
+                <i class="fa-solid fa-handshake-angle absolute -bottom-10 -right-10 text-9xl text-white/5"></i>
+                <h2 class="text-2xl font-heading font-bold text-white mb-4 flex items-center gap-3">
+                    <span class="bg-brand-500/20 text-brand-400 w-8 h-8 rounded-lg flex items-center justify-center text-sm">1</span> 
+                    Executive Summary
+                </h2>
+                <p class="text-gray-300 leading-relaxed mb-4 text-lg">
+                    Thank you for completing our <strong>Digital Growth Consultation Form</strong>. Based on your business objectives and requirements, we have analyzed your needs and prepared this recommendation report.
+                </p>
+                <p class="text-gray-300 leading-relaxed text-lg font-medium">
+                    Your business is <strong class="text-white">not looking for just a website</strong>—you are building a <strong class="text-brand-400">premium digital healthcare brand</strong> that aims to increase patient appointments, improve Google visibility, strengthen your online reputation, and support future business expansion.
+                </p>
+            </div>
+        </section>
+
+        <!-- 2. Business Overview -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 reveal">
+            <h2 class="text-2xl font-heading font-bold text-white mb-6 flex items-center gap-3">
+                <span class="bg-brand-500/20 text-brand-400 w-8 h-8 rounded-lg flex items-center justify-center text-sm">2</span> 
+                Your Business Overview
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <div class="glass-card rounded-xl p-5 text-center">
+                    <i class="fa-solid fa-building text-blue-400 text-2xl mb-3"></i>
+                    <p class="text-xs text-gray-400 uppercase mb-1">Business</p>
+                    <p class="text-sm font-semibold text-white">Testa Diagnostics</p>
+                </div>
+                <div class="glass-card rounded-xl p-5 text-center">
+                    <i class="fa-solid fa-stethoscope text-teal-400 text-2xl mb-3"></i>
+                    <p class="text-xs text-gray-400 uppercase mb-1">Industry</p>
+                    <p class="text-sm font-semibold text-white">Diagnostic Imaging</p>
+                </div>
+                <div class="glass-card rounded-xl p-5 text-center">
+                    <i class="fa-solid fa-chart-line text-green-400 text-2xl mb-3"></i>
+                    <p class="text-xs text-gray-400 uppercase mb-1">Stage</p>
+                    <p class="text-sm font-semibold text-white">Growing</p>
+                </div>
+                <div class="glass-card rounded-xl p-5 text-center border border-green-500/30">
+                    <i class="fa-solid fa-code-branch text-purple-400 text-2xl mb-3"></i>
+                    <p class="text-xs text-gray-400 uppercase mb-1">Future Expansion</p>
+                    <p class="text-sm font-semibold text-white flex items-center justify-center gap-1"><i class="fa-solid fa-check text-green-500"></i> Yes</p>
+                </div>
+                <div class="glass-card rounded-xl p-5 text-center">
+                    <i class="fa-solid fa-hospital text-orange-400 text-2xl mb-3"></i>
+                    <p class="text-xs text-gray-400 uppercase mb-1">Branches</p>
+                    <p class="text-sm font-semibold text-white">1</p>
+                </div>
+                <div class="glass-card rounded-xl p-5 text-center">
+                    <i class="fa-solid fa-bullseye text-red-400 text-2xl mb-3"></i>
+                    <p class="text-xs text-gray-400 uppercase mb-1">Primary Goal</p>
+                    <p class="text-sm font-semibold text-white">Increase Footfall</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3 & 4. Challenges & Goals -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Challenges -->
+                <div class="glass-card rounded-2xl p-8 border-t-4 border-t-red-500 reveal-left">
+                    <h2 class="text-2xl font-heading font-bold text-white mb-6 flex items-center gap-3">
+                        <span class="bg-red-500/20 text-red-400 w-8 h-8 rounded-lg flex items-center justify-center text-sm">3</span> 
+                        Challenges Identified
+                    </h2>
+                    <ul class="space-y-3 mb-6" id="challenges-list">
+                        <!-- Filled by JS -->
+                    </ul>
+                    <div class="p-4 bg-red-500/10 rounded-lg border border-red-500/20">
+                        <p class="text-sm text-gray-300">
+                            <strong>Analysis:</strong> These challenges indicate that your business requires a comprehensive digital growth strategy, not just a basic website.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Goals -->
+                <div class="glass-card rounded-2xl p-8 border-t-4 border-t-brand-500 reveal-right">
+                    <h2 class="text-2xl font-heading font-bold text-white mb-6 flex items-center gap-3">
+                        <span class="bg-brand-500/20 text-brand-400 w-8 h-8 rounded-lg flex items-center justify-center text-sm">4</span> 
+                        Your Business Goals
+                    </h2>
+                    <p class="text-gray-400 mb-4">You want to achieve:</p>
+                    <ul class="space-y-3" id="goals-list">
+                        <!-- Filled by JS -->
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5 & 6. Features & Marketing -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 reveal">
+            <div class="glass-card rounded-2xl overflow-hidden border border-white/5">
+                <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10">
+                    
+                    <!-- Core Features -->
+                    <div class="p-8 bg-dark-800/30">
+                        <h2 class="text-xl font-heading font-bold text-white mb-4 flex items-center gap-2">
+                            <span class="bg-brand-500/20 text-brand-400 w-6 h-6 rounded flex items-center justify-center text-xs">5a</span> 
+                            Core Features
+                        </h2>
+                        <ul class="space-y-2 text-sm text-gray-300" id="core-features">
+                            <!-- Filled by JS -->
+                        </ul>
+                    </div>
+
+                    <!-- Future Features -->
+                    <div class="p-8 bg-dark-800/30">
+                        <h2 class="text-xl font-heading font-bold text-white mb-4 flex items-center gap-2 text-purple-400">
+                            <span class="bg-purple-500/20 text-purple-400 w-6 h-6 rounded flex items-center justify-center text-xs">5b</span> 
+                            Future Features
+                        </h2>
+                        <ul class="space-y-2 text-sm text-gray-300" id="future-features">
+                            <!-- Filled by JS -->
+                        </ul>
+                    </div>
+
+                    <!-- Marketing -->
+                    <div class="p-8 bg-dark-800/30">
+                        <h2 class="text-xl font-heading font-bold text-white mb-4 flex items-center gap-2 text-blue-400">
+                            <span class="bg-blue-500/20 text-blue-400 w-6 h-6 rounded flex items-center justify-center text-xs">6</span> 
+                            SEO & Marketing
+                        </h2>
+                        <ul class="space-y-2 text-sm text-gray-300 mb-6" id="marketing-reqs">
+                            <!-- Filled by JS -->
+                        </ul>
+                        <div class="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                            <p class="text-xs text-blue-200">This confirms that the website should be developed as a marketing platform capable of supporting continuous growth.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. Technology Comparison -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+            <div class="text-center mb-10 reveal">
+                <h2 class="text-3xl font-heading font-bold text-white mb-3 flex items-center justify-center gap-3">
+                    <span class="bg-brand-500/20 text-brand-400 w-10 h-10 rounded-lg flex items-center justify-center text-lg">7</span> 
+                    Technology Comparison
+                </h2>
+                <p class="text-gray-400">Evaluating the best platform for your specific healthcare requirements.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- HTML -->
+                <div class="glass-card rounded-xl p-6 tech-card reveal-up border-t-2 border-gray-600">
+                    <h3 class="text-xl font-bold text-white mb-1">HTML/CSS/JS</h3>
+                    <p class="text-xs text-gray-400 mb-4 pb-4 border-b border-white/10">Option 1</p>
+                    <div class="mb-4">
+                        <p class="text-sm font-semibold text-gray-300 mb-2">Best For:</p>
+                        <p class="text-xs text-gray-400">Basic informational websites, portfolios.</p>
+                    </div>
+                    <ul class="text-xs space-y-2 text-gray-300 mb-6 flex-grow">
+                        <li class="text-green-400"><i class="fa-solid fa-plus mr-1"></i> Fast loading, low cost</li>
+                        <li class="text-red-400"><i class="fa-solid fa-minus mr-1"></i> No Admin Panel</li>
+                        <li class="text-red-400"><i class="fa-solid fa-minus mr-1"></i> Difficult to scale</li>
+                        <li class="text-red-400"><i class="fa-solid fa-minus mr-1"></i> Future upgrades require rebuild</li>
+                    </ul>
+                    <div class="mt-auto pt-4 border-t border-white/10">
+                        <span class="inline-block px-3 py-1 bg-red-500/20 text-red-400 rounded text-xs font-bold w-full text-center">❌ Not Recommended</span>
+                    </div>
+                </div>
+
+                <!-- WordPress -->
+                <div class="glass-card rounded-xl p-6 tech-card reveal-up border-t-2 border-blue-500" style="transition-delay: 0.1s;">
+                    <h3 class="text-xl font-bold text-white mb-1">WordPress</h3>
+                    <p class="text-xs text-gray-400 mb-4 pb-4 border-b border-white/10">Option 2</p>
+                    <div class="mb-4">
+                        <p class="text-sm font-semibold text-gray-300 mb-2">Best For:</p>
+                        <p class="text-xs text-gray-400">Blogs, basic service websites.</p>
+                    </div>
+                    <ul class="text-xs space-y-2 text-gray-300 mb-6 flex-grow">
+                        <li class="text-green-400"><i class="fa-solid fa-plus mr-1"></i> Easy content management</li>
+                        <li class="text-green-400"><i class="fa-solid fa-plus mr-1"></i> Good SEO plugins</li>
+                        <li class="text-red-400"><i class="fa-solid fa-minus mr-1"></i> Plugin dependency</li>
+                        <li class="text-red-400"><i class="fa-solid fa-minus mr-1"></i> Advanced healthcare features are hard to maintain</li>
+                    </ul>
+                    <div class="mt-auto pt-4 border-t border-white/10">
+                        <span class="inline-block px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded text-xs font-bold w-full text-center">⚠️ Conditional</span>
+                    </div>
+                </div>
+
+                <!-- React -->
+                <div class="glass-card rounded-xl p-6 tech-card reveal-up border-t-2 border-cyan-500" style="transition-delay: 0.2s;">
+                    <h3 class="text-xl font-bold text-white mb-1">React.js</h3>
+                    <p class="text-xs text-gray-400 mb-4 pb-4 border-b border-white/10">Option 3</p>
+                    <div class="mb-4">
+                        <p class="text-sm font-semibold text-gray-300 mb-2">Best For:</p>
+                        <p class="text-xs text-gray-400">Dashboards, internal business apps.</p>
+                    </div>
+                    <ul class="text-xs space-y-2 text-gray-300 mb-6 flex-grow">
+                        <li class="text-green-400"><i class="fa-solid fa-plus mr-1"></i> Excellent user experience</li>
+                        <li class="text-green-400"><i class="fa-solid fa-plus mr-1"></i> Highly interactive</li>
+                        <li class="text-red-400"><i class="fa-solid fa-minus mr-1"></i> SEO requires extra config</li>
+                        <li class="text-red-400"><i class="fa-solid fa-minus mr-1"></i> Not ideal for content-heavy sites</li>
+                    </ul>
+                    <div class="mt-auto pt-4 border-t border-white/10">
+                        <span class="inline-block px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded text-xs font-bold w-full text-center">⚠️ Better for Apps</span>
+                    </div>
+                </div>
+
+                <!-- Next.js -->
+                <div class="glass-card rounded-xl p-6 tech-card reveal-up glow-border bg-dark-800 z-10" style="transition-delay: 0.3s;">
+                    <div class="absolute -top-3 -right-3 bg-brand-500 text-dark-900 font-bold px-3 py-1 rounded-full text-xs shadow-lg animate-pulse">
+                        ⭐ Recommended
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-1 flex items-center gap-2">
+                        Next.js
+                    </h3>
+                    <p class="text-xs text-gray-400 mb-4 pb-4 border-b border-white/10">Option 4</p>
+                    <div class="mb-4">
+                        <p class="text-sm font-semibold text-brand-400 mb-2">Best For:</p>
+                        <p class="text-xs text-gray-200">Healthcare, large service sites, high-performance SEO.</p>
+                    </div>
+                    <ul class="text-xs space-y-2 text-gray-300 mb-6 flex-grow">
+                        <li class="text-brand-400"><i class="fa-solid fa-check mr-1"></i> Excellent Google SEO & Speed</li>
+                        <li class="text-brand-400"><i class="fa-solid fa-check mr-1"></i> Future Ready & Scalable</li>
+                        <li class="text-brand-400"><i class="fa-solid fa-check mr-1"></i> Supports AI & Portals</li>
+                        <li class="text-brand-400"><i class="fa-solid fa-check mr-1"></i> Perfect for Google Ads</li>
+                    </ul>
+                    <div class="mt-auto pt-4 border-t border-white/10">
+                        <span class="inline-block px-3 py-2 bg-brand-500 text-dark-900 rounded text-sm font-bold w-full text-center shadow-md hover:bg-brand-400 transition-colors">✅ Highly Recommended</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. Technology Comparison Table -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 reveal">
+            <h2 class="text-2xl font-heading font-bold text-white mb-6 flex items-center gap-3">
+                <span class="bg-brand-500/20 text-brand-400 w-8 h-8 rounded-lg flex items-center justify-center text-sm">8</span> 
+                Detailed Feature Comparison
+            </h2>
+            <div class="glass-card rounded-2xl overflow-hidden border border-white/10">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-gray-300 whitespace-nowrap">
+                        <thead class="text-xs uppercase bg-dark-900 text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-4 font-semibold w-1/5">Feature</th>
+                                <th scope="col" class="px-6 py-4 font-semibold text-center border-l border-white/5">HTML</th>
+                                <th scope="col" class="px-6 py-4 font-semibold text-center border-l border-white/5">WordPress</th>
+                                <th scope="col" class="px-6 py-4 font-semibold text-center border-l border-white/5">React.js</th>
+                                <th scope="col" class="px-6 py-4 font-bold text-center border-l border-white/5 bg-brand-500/10 text-brand-400">Next.js</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5">
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="px-6 py-4 font-medium text-white">Google SEO</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5"><i class="fa-solid fa-star text-yellow-500"></i><i class="fa-solid fa-star text-yellow-500"></i></td>
+                                <td class="px-6 py-4 text-center border-l border-white/5"><i class="fa-solid fa-star text-yellow-500"></i><i class="fa-solid fa-star text-yellow-500"></i><i class="fa-solid fa-star text-yellow-500"></i><i class="fa-solid fa-star text-yellow-500"></i></td>
+                                <td class="px-6 py-4 text-center border-l border-white/5"><i class="fa-solid fa-star text-yellow-500"></i><i class="fa-solid fa-star text-yellow-500"></i></td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 bg-brand-500/5 font-bold"><i class="fa-solid fa-star text-brand-400"></i><i class="fa-solid fa-star text-brand-400"></i><i class="fa-solid fa-star text-brand-400"></i><i class="fa-solid fa-star text-brand-400"></i><i class="fa-solid fa-star text-brand-400"></i></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="px-6 py-4 font-medium text-white">Speed</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5"><i class="fa-solid fa-star text-yellow-500"></i><i class="fa-solid fa-star text-yellow-500"></i><i class="fa-solid fa-star text-yellow-500"></i><i class="fa-solid fa-star text-yellow-500"></i></td>
+                                <td class="px-6 py-4 text-center border-l border-white/5"><i class="fa-solid fa-star text-yellow-500"></i><i class="fa-solid fa-star text-yellow-500"></i><i class="fa-solid fa-star text-yellow-500"></i></td>
+                                <td class="px-6 py-4 text-center border-l border-white/5"><i class="fa-solid fa-star text-yellow-500"></i><i class="fa-solid fa-star text-yellow-500"></i><i class="fa-solid fa-star text-yellow-500"></i><i class="fa-solid fa-star text-yellow-500"></i></td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 bg-brand-500/5 font-bold"><i class="fa-solid fa-star text-brand-400"></i><i class="fa-solid fa-star text-brand-400"></i><i class="fa-solid fa-star text-brand-400"></i><i class="fa-solid fa-star text-brand-400"></i><i class="fa-solid fa-star text-brand-400"></i></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="px-6 py-4 font-medium text-white">Mobile Friendly</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-green-400">✅</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-green-400">✅</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-green-400">✅</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 bg-brand-500/5 text-green-400 font-bold">✅</td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="px-6 py-4 font-medium text-white">Blog Management</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-red-500">❌</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-green-400">✅</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-red-500">❌</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 bg-brand-500/5 text-green-400 font-bold">✅</td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="px-6 py-4 font-medium text-white">Appointment Booking</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5">Basic</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5">Good</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5">Good</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 bg-brand-500/5 text-brand-400 font-bold">Excellent</td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="px-6 py-4 font-medium text-white">Future Expansion</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-red-400">Poor</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-yellow-400">Moderate</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5">Good</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 bg-brand-500/5 text-brand-400 font-bold">Excellent</td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="px-6 py-4 font-medium text-white">AI Integration</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-red-500">❌</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-yellow-400">Limited</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5">Good</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 bg-brand-500/5 text-brand-400 font-bold">Excellent</td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="px-6 py-4 font-medium text-white">Dashboard Support</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-red-500">❌</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-yellow-400">Limited</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-green-400">Excellent</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 bg-brand-500/5 text-brand-400 font-bold">Excellent</td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="px-6 py-4 font-medium text-white">Patient Portal</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-red-500">❌</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-yellow-400">Limited</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5">Good</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 bg-brand-500/5 text-brand-400 font-bold">Excellent</td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="px-6 py-4 font-medium text-white">Google Ads Landing Pages</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5">Basic</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5">Good</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-green-400">Excellent</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 bg-brand-500/5 text-brand-400 font-bold">Excellent</td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="px-6 py-4 font-medium text-white">Long-Term Scalability</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-red-400">Low</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-yellow-400">Medium</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-green-400">High</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 bg-brand-500/5 text-brand-400 font-bold">Very High</td>
+                            </tr>
+                            <tr class="bg-dark-800 text-white font-bold">
+                                <td class="px-6 py-4">Overall Recommendation</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-red-400">Not Ideal</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 text-yellow-400">Conditional</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5">For Apps</td>
+                                <td class="px-6 py-4 text-center border-l border-white/5 bg-brand-500/20 text-brand-400 shadow-inner">⭐ Highly Recommended</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. Recommended Website Modules (Phases) -->
+        <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 reveal">
+            <h2 class="text-2xl font-heading font-bold text-white mb-10 flex items-center gap-3">
+                <span class="bg-brand-500/20 text-brand-400 w-8 h-8 rounded-lg flex items-center justify-center text-sm">9</span> 
+                Recommended Website Modules
+            </h2>
+
+            <div class="relative pl-8 border-l-2 border-brand-500/30 space-y-12">
+                <!-- Phase 1 -->
+                <div class="relative reveal-left">
+                    <div class="timeline-dot bg-brand-500"></div>
+                    <div class="glass-card rounded-xl p-6 ml-4 border border-brand-500/20">
+                        <span class="absolute -top-3 left-6 bg-brand-500 text-dark-900 text-xs font-bold px-3 py-1 rounded-full shadow-lg">Phase 1</span>
+                        <h3 class="text-xl font-bold text-white mb-4 mt-2">Website Launch & Foundation</h3>
+                        <div class="flex flex-wrap gap-2" id="phase1-modules">
+                            <!-- JS Filled -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="relative reveal-left" style="transition-delay: 0.1s;">
+                    <div class="timeline-dot bg-blue-500"></div>
+                    <div class="glass-card rounded-xl p-6 ml-4 border border-blue-500/20">
+                        <span class="absolute -top-3 left-6 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">Phase 2</span>
+                        <h3 class="text-xl font-bold text-white mb-4 mt-2">Business Growth</h3>
+                        <div class="flex flex-wrap gap-2" id="phase2-modules">
+                            <!-- JS Filled -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 3 -->
+                <div class="relative reveal-left" style="transition-delay: 0.2s;">
+                    <div class="timeline-dot bg-purple-500"></div>
+                    <div class="glass-card rounded-xl p-6 ml-4 border border-purple-500/20">
+                        <span class="absolute -top-3 left-6 bg-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">Phase 3</span>
+                        <h3 class="text-xl font-bold text-white mb-4 mt-2">Future Expansion</h3>
+                        <div class="flex flex-wrap gap-2" id="phase3-modules">
+                            <!-- JS Filled -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10. Digital Marketing Services -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 reveal">
+            <h2 class="text-2xl font-heading font-bold text-white mb-6 flex items-center gap-3">
+                <span class="bg-brand-500/20 text-brand-400 w-8 h-8 rounded-lg flex items-center justify-center text-sm">10</span> 
+                Digital Marketing & Advertising Strategy
+            </h2>
+            <p class="text-gray-400 mb-8 max-w-3xl">To maximize the return on your website investment, we recommend a structured digital marketing strategy covering these key areas:</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glass-card p-6 rounded-xl border-t-2 border-green-500">
+                    <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2"><i class="fa-brands fa-google text-green-400"></i> Google Ads</h3>
+                    <ul class="text-sm text-gray-300 space-y-2 list-disc list-inside">
+                        <li>Search Campaigns</li>
+                        <li>Local Service Campaigns</li>
+                        <li>Performance Max</li>
+                        <li>Call-Only Campaigns</li>
+                        <li>Remarketing</li>
+                    </ul>
+                </div>
+                <div class="glass-card p-6 rounded-xl border-t-2 border-blue-500">
+                    <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2"><i class="fa-brands fa-meta text-blue-400"></i> Meta Ads</h3>
+                    <ul class="text-sm text-gray-300 space-y-2 list-disc list-inside">
+                        <li>Brand Awareness</li>
+                        <li>Lead Generation</li>
+                        <li>Appointment Booking</li>
+                        <li>Local Audience Targeting</li>
+                    </ul>
+                </div>
+                <div class="glass-card p-6 rounded-xl border-t-2 border-brand-500">
+                    <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2"><i class="fa-solid fa-magnifying-glass-chart text-brand-400"></i> SEO Optimization</h3>
+                    <ul class="text-sm text-gray-300 space-y-2 list-disc list-inside">
+                        <li>Local SEO Strategy</li>
+                        <li>Google Business Profile</li>
+                        <li>Service Page SEO</li>
+                        <li>Technical & Content SEO</li>
+                        <li>Competitor Analysis</li>
+                    </ul>
+                </div>
+                <div class="glass-card p-6 rounded-xl border-t-2 border-purple-500">
+                    <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2"><i class="fa-solid fa-bullhorn text-purple-400"></i> Additional Services</h3>
+                    <ul class="text-sm text-gray-300 space-y-2 list-disc list-inside">
+                        <li>WhatsApp Marketing</li>
+                        <li>Video & Content Marketing</li>
+                        <li>Review Management</li>
+                        <li>Landing Page Optimization</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 11, 12, 13. Recommendation, Pricing, Next Steps -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Investment Guide -->
+                <div class="lg:col-span-1 glass-card rounded-2xl p-6 reveal-left border border-white/5 flex flex-col h-full">
+                    <h2 class="text-xl font-heading font-bold text-white mb-6 flex items-center gap-2">
+                        <span class="bg-gray-700 w-6 h-6 rounded flex items-center justify-center text-xs">12</span> 
+                        Estimated Investment Guide
+                    </h2>
+                    <div class="space-y-4 flex-grow">
+                        <div class="flex flex-wrap justify-between items-center p-4 rounded-xl bg-dark-800/50 border border-white/5 gap-2 hover:bg-dark-800/80 transition-colors">
+                            <span class="text-gray-400 text-sm font-medium">HTML/CSS/JS</span>
+                            <span class="text-gray-300 font-mono text-sm font-semibold whitespace-nowrap">₹10,000 – ₹20,000</span>
+                        </div>
+                        <div class="flex flex-wrap justify-between items-center p-4 rounded-xl bg-dark-800/50 border border-white/5 gap-2 hover:bg-dark-800/80 transition-colors">
+                            <span class="text-gray-400 text-sm font-medium">WordPress</span>
+                            <span class="text-gray-300 font-mono text-sm font-semibold whitespace-nowrap">₹20,000 – ₹35,000</span>
+                        </div>
+                        <div class="flex flex-wrap justify-between items-center p-4 rounded-xl bg-dark-800/50 border border-white/5 gap-2 hover:bg-dark-800/80 transition-colors">
+                            <span class="text-gray-400 text-sm font-medium">React.js</span>
+                            <span class="text-gray-300 font-mono text-sm font-semibold whitespace-nowrap">₹30,000 – ₹45,000</span>
+                        </div>
+                        <div class="flex flex-wrap justify-between items-center p-5 rounded-xl bg-gradient-to-r from-brand-500/10 to-transparent border border-brand-500/30 gap-2 relative overflow-hidden shadow-[0_0_15px_rgba(20,184,166,0.1)]">
+                            <div class="absolute left-0 top-0 w-1.5 h-full bg-brand-500"></div>
+                            <div class="pl-2">
+                                <span class="text-brand-400 font-bold block text-base md:text-lg">Next.js</span>
+                                <span class="text-[10px] text-brand-500 uppercase tracking-widest font-bold">Recommended</span>
+                            </div>
+                            <span class="text-white font-mono font-bold text-base md:text-lg whitespace-nowrap">₹40,000 – ₹60,000</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-6 italic bg-dark-900/50 p-3 rounded-lg border border-white/5">*Final pricing depends on exact feature set, design complexity, integrations, and project scope.</p>
+                </div>
+
+                <!-- Final Recommendation & Next Steps -->
+                <div class="lg:col-span-2 space-y-8">
+                    
+                    <div class="glass-card rounded-2xl p-8 bg-gradient-to-br from-brand-900/40 to-dark-900 border border-brand-500/30 reveal-right glow-border">
+                        <h2 class="text-2xl font-heading font-bold text-white mb-4 flex items-center gap-3">
+                            <span class="bg-brand-500 text-dark-900 w-8 h-8 rounded-lg flex items-center justify-center text-sm">11</span> 
+                            Our Recommendation
+                        </h2>
+                        <p class="text-gray-200 mb-4 text-lg">
+                            After carefully reviewing your business goals, growth plans, and required features, AmitRana Digital Marketing Agency recommends a <strong class="text-brand-400 text-xl">Next.js-based website.</strong>
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-gray-300 border border-white/10"><i class="fa-solid fa-check text-brand-400 mr-1"></i> Superior SEO</span>
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-gray-300 border border-white/10"><i class="fa-solid fa-check text-brand-400 mr-1"></i> Faster Speed</span>
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-gray-300 border border-white/10"><i class="fa-solid fa-check text-brand-400 mr-1"></i> Better UX</span>
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-gray-300 border border-white/10"><i class="fa-solid fa-check text-brand-400 mr-1"></i> Highly Scalable</span>
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-gray-300 border border-white/10"><i class="fa-solid fa-check text-brand-400 mr-1"></i> Future-ready</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">It aligns perfectly with your objective of becoming a premium diagnostic centre with strong online visibility and sustainable growth.</p>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-8 border-l-4 border-l-blue-500 reveal-right" style="transition-delay: 0.1s;">
+                        <h2 class="text-xl font-heading font-bold text-white mb-4 flex items-center gap-2">
+                            <span class="bg-gray-700 w-6 h-6 rounded flex items-center justify-center text-xs">13</span> 
+                            Next Step
+                        </h2>
+                        <p class="text-gray-300 mb-4">We recommend that you review the technology options and select the solution that best fits your business goals and budget. Once confirmed, we will prepare:</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                            <div class="flex items-center gap-3"><div class="w-2 h-2 bg-blue-500 rounded-full"></div><span class="text-gray-300 text-sm">Detailed Project Proposal</span></div>
+                            <div class="flex items-center gap-3"><div class="w-2 h-2 bg-blue-500 rounded-full"></div><span class="text-gray-300 text-sm">Final Feature List</span></div>
+                            <div class="flex items-center gap-3"><div class="w-2 h-2 bg-blue-500 rounded-full"></div><span class="text-gray-300 text-sm">Project Timeline</span></div>
+                            <div class="flex items-center gap-3"><div class="w-2 h-2 bg-blue-500 rounded-full"></div><span class="text-gray-300 text-sm">Best Possible Pricing</span></div>
+                            <div class="flex items-center gap-3 sm:col-span-2"><div class="w-2 h-2 bg-blue-500 rounded-full"></div><span class="text-gray-300 text-sm">Digital Marketing & SEO Campaign Strategy</span></div>
+                        </div>
+                        <p class="text-brand-400 font-medium italic">We look forward to helping Testa Diagnostics build a scalable digital presence that drives more patient appointments, stronger brand visibility, and long-term business growth.</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 14. Choose the Right Website for Your Business & Budget -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 reveal">
+            <h2 class="text-2xl font-heading font-bold text-white mb-4 flex items-center gap-3">
+                <span class="bg-brand-500/20 text-brand-400 w-8 h-8 rounded-lg flex items-center justify-center text-sm">14</span> 
+                Choose the Right Website for Your Business & Budget
+            </h2>
+            <p class="text-gray-300 mb-10 max-w-3xl text-lg">Every business has different goals, timelines, and budgets. Below is our recommendation to help you choose the most suitable solution.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                
+                <!-- Option 1: HTML -->
+                <div class="glass-card rounded-2xl p-6 md:p-8 border-t-4 border-gray-600 flex flex-col">
+                    <h3 class="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4">Option 1 – HTML, CSS & JavaScript Website</h3>
+                    
+                    <div class="mb-6 flex-grow">
+                        <p class="text-sm font-semibold text-gray-300 mb-3">Recommended if:</p>
+                        <ul class="space-y-2 text-sm text-gray-400">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-green-500 mt-1"></i> You need a basic online presence.</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-green-500 mt-1"></i> Your budget is limited.</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-green-500 mt-1"></i> You don't require frequent content updates.</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-green-500 mt-1"></i> You only need a simple informational website.</li>
+                        </ul>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-dark-800/50 p-4 rounded-xl border border-white/5">
+                            <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Best For</p>
+                            <p class="text-sm text-gray-300">Small businesses, Startups, Single-page or brochure websites</p>
+                        </div>
+                        <div class="bg-dark-800/50 p-4 rounded-xl border border-white/5">
+                            <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Estimated Investment</p>
+                            <p class="text-lg font-bold text-white font-mono">₹10,000 – ₹20,000</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-red-500/5 p-4 rounded-xl border border-red-500/10 mt-auto">
+                        <p class="text-sm font-semibold text-red-400 mb-2">Not Recommended For:</p>
+                        <p class="text-sm text-gray-400">Long-term SEO, Large service catalogs, Online booking systems, Future expansion</p>
+                    </div>
+                    
+                    <button onclick="selectPackage('HTML/CSS/JavaScript', '₹10,000 – ₹20,000')" class="w-full mt-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl font-semibold transition-all flex items-center justify-center gap-2 group">
+                        <i class="fa-solid fa-paper-plane text-gray-400 group-hover:text-white transition-colors"></i> Select This Option
+                    </button>
+                </div>
+
+                <!-- Option 2: WordPress -->
+                <div class="glass-card rounded-2xl p-6 md:p-8 border-t-4 border-blue-500 flex flex-col">
+                    <h3 class="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4">Option 2 – WordPress Website</h3>
+                    
+                    <div class="mb-6 flex-grow">
+                        <p class="text-sm font-semibold text-gray-300 mb-3">Recommended if:</p>
+                        <ul class="space-y-2 text-sm text-gray-400">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-green-500 mt-1"></i> You need an affordable website with an admin panel.</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-green-500 mt-1"></i> You plan to publish blogs and update content regularly.</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-green-500 mt-1"></i> You want good SEO at a moderate budget.</li>
+                        </ul>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-dark-800/50 p-4 rounded-xl border border-white/5">
+                            <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Best For</p>
+                            <p class="text-sm text-gray-300">Small & medium businesses, Clinics, Service-based companies</p>
+                        </div>
+                        <div class="bg-dark-800/50 p-4 rounded-xl border border-white/5">
+                            <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Estimated Investment</p>
+                            <p class="text-lg font-bold text-white font-mono">₹20,000 – ₹35,000</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-red-500/5 p-4 rounded-xl border border-red-500/10 mt-auto">
+                        <p class="text-sm font-semibold text-red-400 mb-2">Not Ideal If:</p>
+                        <p class="text-sm text-gray-400">You expect advanced healthcare modules, plan to build a patient portal or complex dashboards, or want a highly customized platform.</p>
+                    </div>
+                    
+                    <button onclick="selectPackage('WordPress', '₹20,000 – ₹35,000')" class="w-full mt-4 py-3 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 hover:text-blue-300 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 group">
+                        <i class="fa-solid fa-paper-plane group-hover:scale-110 transition-transform"></i> Select This Option
+                    </button>
+                </div>
+
+                <!-- Option 3: React.js -->
+                <div class="glass-card rounded-2xl p-6 md:p-8 border-t-4 border-cyan-500 flex flex-col">
+                    <h3 class="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4">Option 3 – React.js Website</h3>
+                    
+                    <div class="mb-6 flex-grow">
+                        <p class="text-sm font-semibold text-gray-300 mb-3">Recommended if:</p>
+                        <ul class="space-y-2 text-sm text-gray-400">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-green-500 mt-1"></i> You need a modern user interface.</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-green-500 mt-1"></i> Your focus is on custom dashboards or internal applications.</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-green-500 mt-1"></i> SEO is not the highest priority.</li>
+                        </ul>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-dark-800/50 p-4 rounded-xl border border-white/5">
+                            <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Best For</p>
+                            <p class="text-sm text-gray-300">Dashboards, Internal management systems, Custom applications</p>
+                        </div>
+                        <div class="bg-dark-800/50 p-4 rounded-xl border border-white/5">
+                            <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Estimated Investment</p>
+                            <p class="text-lg font-bold text-white font-mono">₹30,000 – ₹45,000</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-red-500/5 p-4 rounded-xl border border-red-500/10 mt-auto">
+                        <p class="text-sm font-semibold text-red-400 mb-2">Not Ideal If:</p>
+                        <p class="text-sm text-gray-400">Your primary objective is to rank higher on Google.</p>
+                    </div>
+                    
+                    <button onclick="selectPackage('React.js', '₹30,000 – ₹45,000')" class="w-full mt-4 py-3 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 hover:text-cyan-300 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 group">
+                        <i class="fa-solid fa-paper-plane group-hover:scale-110 transition-transform"></i> Select This Option
+                    </button>
+                </div>
+
+                <!-- Option 4: Next.js -->
+                <div class="glass-card rounded-2xl p-6 md:p-8 border-t-4 border-brand-500 glow-border bg-gradient-to-b from-brand-900/10 to-transparent flex flex-col relative">
+                    <div class="absolute top-4 right-4 bg-brand-500 text-dark-900 font-bold px-4 py-1.5 rounded-full text-xs shadow-[0_0_15px_rgba(20,184,166,0.5)]">⭐ Recommended</div>
+                    <h3 class="text-xl font-bold text-white mb-6 border-b border-white/10 pb-4 pr-32">Option 4 – Next.js Website</h3>
+                    
+                    <div class="mb-6">
+                        <p class="text-sm font-semibold text-brand-400 mb-3">Recommended if:</p>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-brand-400 mt-1"></i> You want long-term business growth.</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-brand-400 mt-1"></i> SEO is a priority.</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-brand-400 mt-1"></i> You plan to invest in Google Ads and digital marketing.</li>
+                            <li class="flex items-start gap-2"><i class="fa-solid fa-check text-brand-400 mt-1"></i> You expect your website to grow with your business.</li>
+                        </ul>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-brand-500/10 p-4 rounded-xl border border-brand-500/20">
+                            <p class="text-xs text-brand-300 uppercase font-semibold mb-1">Best For</p>
+                            <p class="text-sm text-white">Diagnostic Centres, Hospitals, Healthcare Brands, Multi-location Businesses, Premium Providers</p>
+                        </div>
+                        <div class="bg-brand-500/10 p-4 rounded-xl border border-brand-500/20">
+                            <p class="text-xs text-brand-300 uppercase font-semibold mb-1">Estimated Investment</p>
+                            <p class="text-lg font-bold text-white font-mono">₹40,000 – ₹60,000</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-brand-500/5 p-4 rounded-xl border border-brand-500/20 mt-auto">
+                        <p class="text-sm font-semibold text-brand-400 mb-2">Advantages:</p>
+                        <p class="text-sm text-gray-300 mb-2">Excellent Google SEO, High website speed, Premium user experience, Better Google Ads performance, Future-ready architecture.</p>
+                        <p class="text-xs text-brand-200/70 border-t border-brand-500/20 pt-2 mt-2 italic">Supports AI chatbot, patient portal, online reports, dashboards, and additional integrations without rebuilding the website.</p>
+                    </div>
+                    
+                    <button onclick="selectPackage('Next.js', '₹40,000 – ₹60,000')" class="w-full mt-4 py-3 bg-brand-500 hover:bg-brand-400 text-dark-900 rounded-xl font-bold transition-all shadow-[0_0_20px_rgba(20,184,166,0.3)] hover:shadow-[0_0_25px_rgba(20,184,166,0.5)] flex items-center justify-center gap-2 transform hover:-translate-y-1">
+                        <i class="fa-solid fa-rocket"></i> Select Recommended Option
+                    </button>
+                </div>
+            </div>
+
+            <!-- Recommendation & Budget Table -->
+            <div class="glass-card rounded-2xl p-6 md:p-8 mb-12 bg-dark-800/80">
+                <h3 class="text-xl font-bold text-white mb-4">Our Recommendation for Testa Diagnostics</h3>
+                <p class="text-gray-300 mb-6 text-lg">
+                    After reviewing your requirements, we believe that <strong class="text-brand-400">Next.js</strong> is the most suitable technology for your business because it aligns with your goals of improving Google rankings, increasing patient enquiries, enabling online appointments, and supporting future expansion. 
+                </p>
+                <p class="text-gray-400 mb-8 italic">
+                    However, the final decision should also consider your available budget.
+                </p>
+
+                <div class="overflow-x-auto rounded-xl border border-white/10">
+                    <table class="w-full text-left text-sm text-gray-300">
+                        <thead class="bg-dark-900/80 text-gray-400 uppercase text-xs">
+                            <tr>
+                                <th class="px-6 py-4 font-semibold w-1/2">If Your Budget Is</th>
+                                <th class="px-6 py-4 font-semibold w-1/2 border-l border-white/5">Recommended Solution</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5">
+                            <tr class="hover:bg-white/5 cursor-pointer group transition-colors" onclick="selectPackage('HTML/CSS/JavaScript', '₹10,000 – ₹20,000')">
+                                <td class="px-6 py-4 font-mono font-medium group-hover:text-white">₹10,000 – ₹20,000</td>
+                                <td class="px-6 py-4 border-l border-white/5 flex justify-between items-center">
+                                    <span>HTML/CSS/JavaScript</span>
+                                    <span class="opacity-0 group-hover:opacity-100 text-gray-400 text-xs font-bold transition-opacity"><i class="fa-solid fa-envelope"></i> Choose</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-white/5 cursor-pointer group transition-colors" onclick="selectPackage('WordPress', '₹20,000 – ₹35,000')">
+                                <td class="px-6 py-4 font-mono font-medium group-hover:text-white">₹20,000 – ₹35,000</td>
+                                <td class="px-6 py-4 border-l border-white/5 flex justify-between items-center">
+                                    <span>WordPress</span>
+                                    <span class="opacity-0 group-hover:opacity-100 text-blue-400 text-xs font-bold transition-opacity"><i class="fa-solid fa-envelope"></i> Choose</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-white/5 cursor-pointer group transition-colors" onclick="selectPackage('React.js', '₹30,000 – ₹45,000')">
+                                <td class="px-6 py-4 font-mono font-medium group-hover:text-white">₹30,000 – ₹45,000</td>
+                                <td class="px-6 py-4 border-l border-white/5 flex justify-between items-center">
+                                    <span>React.js</span>
+                                    <span class="opacity-0 group-hover:opacity-100 text-cyan-400 text-xs font-bold transition-opacity"><i class="fa-solid fa-envelope"></i> Choose</span>
+                                </td>
+                            </tr>
+                            <tr class="bg-brand-500/10 cursor-pointer group hover:bg-brand-500/20 transition-colors" onclick="selectPackage('Next.js', '₹40,000 – ₹60,000')">
+                                <td class="px-6 py-4 font-mono font-bold text-white">₹40,000+</td>
+                                <td class="px-6 py-4 border-l border-brand-500/20 font-bold text-brand-400 flex justify-between items-center">
+                                    <span>⭐ Next.js (Best Choice)</span>
+                                    <span class="text-brand-300 text-xs font-bold group-hover:translate-x-1 transition-transform"><i class="fa-solid fa-paper-plane"></i> Select</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Conclusion Block -->
+            <div class="glass-card rounded-2xl p-8 md:p-10 border-2 border-brand-500/30 bg-gradient-to-br from-dark-900 to-brand-900/20 relative overflow-hidden">
+                <div class="absolute -right-20 -top-20 w-64 h-64 bg-brand-500/10 rounded-full blur-3xl"></div>
+                
+                <h3 class="text-2xl font-bold text-white mb-4">Need Help Choosing?</h3>
+                <p class="text-gray-300 mb-6">
+                    If you are unsure which technology is right for your business, <strong>don't worry.</strong><br/>
+                    Our team at <strong>AmitRana Digital Marketing Agency</strong> will help you select the most suitable solution by balancing:
+                </p>
+                
+                <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8 text-sm text-gray-400">
+                    <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-brand-400 rounded-full"></div> Your business goals</li>
+                    <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-brand-400 rounded-full"></div> Your current requirements</li>
+                    <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-brand-400 rounded-full"></div> Your future expansion plans</li>
+                    <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-brand-400 rounded-full"></div> Your digital marketing strategy</li>
+                    <li class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-brand-400 rounded-full"></div> Your available budget</li>
+                </ul>
+
+                <div class="p-5 bg-dark-900/50 rounded-xl border border-white/10 mb-8">
+                    <p class="text-brand-300 italic text-center md:text-left">
+                        "Our objective is not to sell the most expensive solution, but to recommend the option that provides the <strong>best value and long-term return on investment</strong> for your business."
+                    </p>
+                </div>
+
+                <p class="text-gray-300 mb-4 font-medium">Once you choose your preferred website type, we will provide:</p>
+                
+                <div class="flex flex-wrap gap-2 md:gap-3">
+                    <span class="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white flex items-center gap-2"><i class="fa-solid fa-file-contract text-blue-400"></i> A detailed project proposal</span>
+                    <span class="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white flex items-center gap-2"><i class="fa-solid fa-list-check text-green-400"></i> Final feature list</span>
+                    <span class="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white flex items-center gap-2"><i class="fa-regular fa-calendar-days text-purple-400"></i> Project timeline</span>
+                    <span class="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white flex items-center gap-2"><i class="fa-solid fa-tag text-yellow-400"></i> Transparent pricing</span>
+                    <span class="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white flex items-center gap-2"><i class="fa-solid fa-code text-brand-400"></i> Website development plan</span>
+                    <span class="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white flex items-center gap-2"><i class="fa-solid fa-magnifying-glass-chart text-red-400"></i> SEO roadmap</span>
+                    <span class="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white flex items-center gap-2"><i class="fa-brands fa-google text-green-500"></i> GBP optimization plan</span>
+                    <span class="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white flex items-center gap-2"><i class="fa-solid fa-rectangle-ad text-blue-500"></i> Google Ads strategy</span>
+                    <span class="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white flex items-center gap-2"><i class="fa-brands fa-meta text-blue-600"></i> Meta Ads strategy</span>
+                </div>
+                
+                <p class="mt-8 text-center text-gray-400 text-sm border-t border-white/10 pt-6">This ensures you receive a solution tailored to your business goals while making the most of your budget.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 bg-dark-900 pt-10 pb-6 relative overflow-hidden">
+        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-brand-500/10 blur-[80px] rounded-[100%] pointer-events-none"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
+            <div class="flex items-center gap-4">
+                <img src="logo_2.jpg" alt="AmitRana Digital Marketing Agency Logo" class="h-16 w-auto rounded-lg shadow-xl" onerror="this.src='https://placehold.co/200x80/111827/ffffff?text=AR+Digital'">
+                <div>
+                    <h3 class="text-white font-bold text-lg tracking-wide"><span class="text-gradient-logo">AMIT RANA</span></h3>
+                    <p class="text-xs text-brand-400 font-medium tracking-widest uppercase">Digital Marketing Agency</p>
+                </div>
+            </div>
+            
+            <div class="text-center md:text-right">
+                <p class="text-sm text-gray-400 mb-2">Web Development &bull; SEO &bull; Google Business Profile &bull; Performance Marketing</p>
+                <p class="text-xs text-gray-600">&copy; <span id="current-year"></span> AmitRana Digital. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Set current year
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+
+            // Populate Lists dynamically
+            const populateList = (elementId, items, iconHtml) => {
+                const list = document.getElementById(elementId);
+                items.forEach(item => {
+                    list.innerHTML += `<li class="flex items-start gap-3">${iconHtml}<span class="text-gray-300 mt-0.5">${item}</span></li>`;
+                });
+            };
+
+            const populateTags = (elementId, items) => {
+                const container = document.getElementById(elementId);
+                items.forEach(item => {
+                    container.innerHTML += `<span class="text-sm px-3 py-1.5 bg-dark-700/80 border border-white/10 rounded-md text-gray-300 hover:border-brand-500/50 transition-colors">${item}</span>`;
+                });
+            };
+
+            // 3. Challenges
+            populateList('challenges-list', [
+                "Low Google Ranking", "No Effective Website Presence", "Low Patient Appointments", 
+                "Fewer Phone Calls", "Low WhatsApp Enquiries", "Poor Brand Visibility", 
+                "High Local Competition", "Google Ads Not Delivering Expected Results", "Limited Online Trust"
+            ], '<i class="fa-solid fa-triangle-exclamation text-red-500 mt-1"></i>');
+
+            // 4. Goals
+            populateList('goals-list', [
+                "Increase Patient Appointments", "Improve Google Rankings", "Build a Premium Brand Image",
+                "Increase Phone Calls", "Increase WhatsApp Enquiries", "Online Appointment Booking",
+                "Better Website Conversion", "Long-Term Business Growth"
+            ], '<i class="fa-solid fa-bullseye text-brand-400 mt-1"></i>');
+
+            // 5a. Core Features
+            populateList('core-features', [
+                "Home, About, Services, Packages", "Appointment & Calendar Booking", 
+                "Gallery, FAQ, Contact", "Find a Test Search", "WhatsApp & Call Now Integration",
+                "Online Payment Support", "Home Collection Booking", "Email & SMS Notifications"
+            ], '<i class="fa-regular fa-circle-check text-brand-400 mt-1"></i>');
+
+            // 5b. Future Features
+            populateList('future-features', [
+                "AI Chatbot", "Patient Login", "Report Download", 
+                "Dashboard", "Billing System", "Mobile App Integration"
+            ], '<i class="fa-solid fa-rocket text-purple-400 mt-1"></i>');
+
+            // 6. Marketing
+            populateList('marketing-reqs', [
+                "Google Ads & SEO", "Instagram Marketing", "WhatsApp Marketing", 
+                "Content & Video Marketing", "Google Business Profile Optimization"
+            ], '<i class="fa-solid fa-chart-pie text-blue-400 mt-1"></i>');
+
+            // 9. Phases
+            populateTags('phase1-modules', [
+                "Premium Homepage", "About Us", "Services Pages", "Appointment Booking", 
+                "Doctor Profiles", "Gallery", "Contact & FAQ", "Blog", "Google Maps", 
+                "WhatsApp", "Technical SEO", "Google Analytics & Console"
+            ]);
+            populateTags('phase2-modules', [
+                "AI Chatbot", "Patient Login", "Online Reports", "Dashboard", 
+                "Google Ads Landing Pages", "Local SEO Expansion", "Conversion Optimization"
+            ]);
+            populateTags('phase3-modules', [
+                "Mobile Application", "Multi-Branch System", "Billing Integration", 
+                "CRM Integration", "Marketing Automation", "Advanced Analytics"
+            ]);
+
+            // Intersection Observer for scroll animations
+            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-up').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Navbar scroll effect
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('bg-dark-900/90', 'backdrop-blur-md', 'shadow-lg');
+                    navbar.classList.remove('border-b-0');
+                } else {
+                    navbar.classList.remove('bg-dark-900/90', 'backdrop-blur-md', 'shadow-lg');
+                    navbar.classList.add('border-b-0');
+                }
+            });
+        });
+        
+        // Package Selection Email Redirect function
+        function selectPackage(packageName, price) {
+            const email = "amitranahelpline@gmail.com";
+            const subject = encodeURIComponent(`Package Selection: ${packageName} - Testa Diagnostics`);
+            const body = encodeURIComponent(`Hi AmitRana Digital Team,\n\nWe have reviewed the Digital Solution Recommendation Report for Testa Diagnostics.\n\nWe would like to proceed with the following option:\n\nSelected Package: ${packageName}\nEstimated Investment: ${price}\n\nPlease let us know the next steps to kick off the project.\n\nBest Regards,\nTesta Diagnostics`);
+            window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+        }
+    </script>
+</body>
+</html>
